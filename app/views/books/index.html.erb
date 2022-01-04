@@ -1,43 +1,8 @@
-<% if @book.errors.any? %>
-  <%= @book.errors.count %>errors prohibited this obj from being saved:
-  <% @book.errors.full_messages.each do |message| %>
-    <%= message %>
-  <% end %>
-<% end %>
-
 <div class="container px-5 px-sm-0">
   <div class="row">
     <div class="col-md-3">
-      <h2>User info</h2>
-      <%= image_tag @user.get_profile_image %>
-      <table class="table">
-        <tbody>
-          <tr></tr>
-          <tr><%= @user.name %></tr>
-          <tr><%= @user.introduction %></tr>
-        </tbody>
-      </table>
-      <div class="row">
-            <%= link_to  edit_user_path(@user), class: "btn btn-outline-secondary btn-block" do  %>
-              <i class= "fas fa-user-cog"></i>
-            <% end %>
-        </div>
-      <h2 class="mt-3">New book</h2>
-      <%#@book_newだとparam is missing or the value is empty error
-        が起こる　@bookにして解決%>
-        <%= form_with model:@book, local:true do |f| %>
-          <div class="form-group">
-            <label for="book_title">Title</label>
-            <%= f.text_area :title , class:  "form-control book_title"%>
-          </div>
-          <div class="form-group">
-            <label for="book_opinion">Opinion</label>
-            <%= f.text_area :body , class: "form-control book_body" %>
-          </div>
-          <div class="form-group">
-            <%= f.submit 'Create Book', class: "btn btn-success" %>
-          </div>
-        <% end %>
+      <%= render 'layouts/error', model: @book %>
+      <%= render 'users/userinfo', user: current_user, book: @book %>
     </div>
     <div class="col-md-8 offset-md-1">
       <h2>Books</h2>
@@ -54,57 +19,29 @@
           <tbody>
             <tr>
               <td>
-                <%= link_to user_path(book.user.id) do %>
-                <%#　ユーザーのプロフィール画像を下記で表示しようとするとundefined method `get_profile_image' for nil:NilClas %>
-                <%#binding.pryでbook.userがnill %>
-                <%# 原因、binding.pryでbookの中身のuser_idが4という存在しないuserのidになっている %>
-
-                <%# 解決法 rails db:migrate:resetをして、新規登録,投稿をやり直した %>
-
-                <%#binding.pryの際、入力出来なかったらqを入力 %>
-
-                <%# この部分に% binding.pry %を記述してbook, book.userの中身を確認してエラーを解決した %>
-                  <%= image_tag book.user.get_profile_image %>
+                <%= link_to user_path(book.user) do %>
+                  <%= image_tag book.user.get_profile_image, size: "50x50" %>
                 <% end %>
               </td>
               <td>
-                <%= link_to book.title, book_path(book.id) %>
+                <%= link_to book.title, book_path(book) %>
               </td>
               <td>
-                <%#
-                 1) [STEP2] ユーザログイン後のテスト 投稿一覧画面のテスト 表示内容の確認 自分の投稿と他人の投稿のオピニオンが表示される
-                 Failure/Error: expect(page).to have_content book.body
-                   expected to find text "4psf2mo6qazq3i3swuut" in "Bookers\nHome Users Books Log out\nUser info\n8evowbqyw6 x5lxjv0u9qrw2dpecvsm\nNew book\nTitle\nOpinion\nBooks\nTitle Opinion tnm66 tnm66 06fsc 06fsc\nCopyRight Infratop.inc"
-                 # ./spec/system/02_after_login_spec.rb:59:in `block (4 levels) in <main>'
-
-                  2) [STEP3] 仕上げのテスト 処理失敗時のテスト 投稿データの新規投稿失敗: 投稿一覧画面から行い、titleを空にする 投稿一覧画面を表示している
-                     Failure/Error: expect(page).to have_content book.body
-                       expected to find text "iezp094k40tuuzv7kohf" in "Bookers\nHome Users Books Log out\n1errors prohibited this obj from being saved: Title can't be blank\nUser info\nbmo03aeetq sv8kedinf9mt8gxp44u0\nNew book\nTitle\nOpinion 7ljtruugwwfv67cyl8d\nBooks\nTitle Opinion 5kwva 5kwva dlkmj dlkmj\nCopyRight Infratop.inc"
-                     # ./spec/system/03_finishing_touches_spec.rb:137:in `block (4 levels) in <main>'
-                %>
-
-                <%# ↓のbook.titleをbook.bodyにした %>
-
                 <%= book.body%>
-
               </td>
+              <td>
                 <% if book.favorited_by?(current_user) %>
-              <td>
-                <%= link_to book_favorites_path(book), method: :delete do %>
-                     <%= book.favorites.count %>
-                     
-                     <%# いいねでハートが赤くならない　style="color: red;"の記述忘れ%>
-                     <i class="fa fa-heart text-red" aria-hidden="true" style="color: red;"></i>
-                    <% end %>
+                  <%= link_to book_favorites_path(book), method: :delete do %>
+                    <%= book.favorites.count %>
+                    <i class="fas fa-heart text-danger"></i>
+                  <% end %>
+                <% else %>
+                  <%= link_to book_favorites_path(book), method: :post do %>
+                    <%= book.favorites.count %>
+                    <i class="fas fa-heart text-primary"></i>
+                  <% end %>
+                <% end %>
               </td>
-              <% else %>
-              <td>
-                <%= link_to book_favorites_path(book), method: :post do %>
-                     <%= book.favorites.count %>
-                     <i class="fa fa-heart text-blue" aria-hidden="true" style="color: blue;"></i>
-                    <% end %>
-              </td>
-              <% end %>
             </tr>
           </tbody>
         <% end %>

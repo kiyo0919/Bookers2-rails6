@@ -1,59 +1,7 @@
-
-<%#@book.userでuserの情報を持ってこれない=>undifined method ~というエラーが出てる %>
-
 <div class="container">
   <div class="row">
     <div class="col-md-3">
-      <h2>User info</h2>
-      <%#undefined method `get_profile_image' for nil:NilClass %>
-      <%= image_tag @book.user.get_profile_image %>
-      <table class="table">
-        <tbody>
-          <tr>
-            <th>name</th>
-            <%# undefined method `name' for nil:NilClass %>
-            <th><%= @book.user.name %></th>
-          </tr>
-          <tr>
-            <th>introduction</th>
-                <%# undefined method `introduction' for nil:NilClass %>
-            <th><%= @book.user.introduction %></th>
-          </tr>
-        </tbody>
-      </table>
-        <div class="row">
-            <%#
-            1) [STEP3] 仕上げのテスト 他人の画面のテスト 他人の投稿詳細画面のテスト サイドバーの確認 他人のユーザ編集画面へのリンクが存在する
-             Failure/Error: expect(page).to have_link '', href: edit_user_path(other_user)
-             expected to find link "" with href "/users/1/edit" but there were no matches
-             # ./spec/system/03_finishing_touches_spec.rb:248:in `block (5 levels) in <main>'
-
-            2) [STEP3] 仕上げのテスト 他人の画面のテスト 他人の投稿詳細画面のテスト サイドバーの確認 自分のユーザ編集画面へのリンクは存在しない
-             Failure/Error: expect(page).not_to have_link '', href: edit_user_path(user)
-             expected not to find visible link "" with href "/users/2/edit", found 1 match: ""
-             # ./spec/system/03_finishing_touches_spec.rb:255:in `block (5 levels) in <main>'
-            %>
-
-            <%# ↓のcurrent_user.idを@book.user.id にした%>
-
-            <%= link_to  edit_user_path(@book.user.id), class: "btn btn-outline-secondary btn-block" do  %>
-              <i class= "fas fa-user-cog"></i>
-            <% end %>
-        </div>
-        <h2 class="mt-3">New book</h2>
-          <%= form_with model:@book_new, local:true do |f| %>
-            <div class="form-group">
-              <label for ="book_title">Title</label>
-                <%= f.text_field :title %>
-            </div>
-            <div class="form-group">
-              <label for ="book_opinion">Opinion</label>
-                <%= f.text_area :body %>
-            </div>
-            <div class="form-group">
-               <%= f.submit 'Create Book' , class: "btn btn-success"%>
-            </div>
-          <% end %>
+      <%= render 'users/userinfo', user: @user, book: @new_book %>
     </div>
     <div class="col-md-8 offset-md-1">
       <h2>Book detail</h2>
@@ -61,44 +9,41 @@
           <tbody>
             <tr>
               <td>
-                <%# undefined method `id' for nil:NilClass%>
-                <%= link_to user_path(@book.user.id) do %>
-
-                 <%#undefined method `get_profile_image' for nil:NilClass %>
-                 <%= image_tag @book.user.get_profile_image %><br>
-
-
-                  <%#undefined method `name' for nil:NilClass %>
-                 <%= @book.user.name %>
+                <%= link_to user_path(@book.user) do %>
+                 <%= image_tag @book.user.get_profile_image, size: "50x50" %>
                 <% end %>
+                <br>
+                  <%= link_to user_path(@user.id) do %>
+                    <%= @user.name %>
+                  <% end %>
               </td>
-                <%#文字にlinkをつける方法
-                <%= link_to list.title, list_path(list.id) %>
               <td>
                 <%= link_to @book.title, book_path(@book.id) %>
               </td>
               <td>
                 <%= @book.body %>
               </td>
+              <td>
                 <% if @book.favorited_by?(current_user) %>
-              <td>
-                <%= link_to book_favorites_path(@book), method: :delete do %>
-                     <%= @book.favorites.count %>
-                     <i class="fa fa-heart text-red" aria-hidden="true"></i>
-                <% end %>
-              </td>
+                  <%= link_to book_favorites_path(@book), method: :delete do %>
+                    <%= @book.favorites.count %>
+                    <i class="fas fa-heart text-danger"></i>
+                  <% end %>
                 <% else %>
-              <td>
-                <%= link_to book_favorites_path(@book), method: :post do %>
-                     <%= @book.favorites.count %>
-                      <i class="fa fa-heart text-blue" aria-hidden="true" style="color: blue;"></i>
+                  <%= link_to book_favorites_path(@book), method: :post do %>
+                    <%= @book.favorites.count %>
+                    <i class="fas fa-heart text-primary"></i>
+                  <% end %>
                 <% end %>
               </td>
-              <% end %>
               <td>
-                <% if @book.user == current_user %>
-                   <%= link_to "Edit", edit_book_path(@book.id) , class: "btn btn-success"%>
-                   <%= link_to "Destroy", book_path(@book.id), method: :delete, "data-confirm" => "本当に削除しますか？" , class: "btn btn-sm btn-danger"%>
+                <% if @user == current_user %>
+                  <%= link_to "Edit", edit_book_path(@book.id), class: "btn btn-sm btn-success" %>
+                <% end %>
+              </td>
+              <td>
+                <% if @user == current_user %>
+                  <%= link_to "Destroy", book_path(@book.id), method: :delete,'data-confirm' => "本当に消しますか？", class: "btn btn-sm btn-danger" %>
                 <% end %>
               </td>
             </tr>

@@ -1,89 +1,63 @@
 class BooksController < ApplicationController
 
-    # https://qiita.com/nao0725/items/47606b8975603a12fd5eを参考に
-    #↓他人の編集画面に遷移しないようにする記述
-
-    before_action :correct_user, only: [:edit, :update]
-
-def create
-    @book = Book.new(book_params)
-
-    @book.user_id = current_user.id
-
-    #フラッシュメッセージ実装
-    if @book.save
-        flash[:notice]="You have updated user successfully."
-        redirect_to book_path(@book.id)
-    else
-        #↓2つの変数は、indexを表示する為の変数
-        @books =Book.all
-        @user = current_user
-        render :index
-    end
-end
-
-def show
+  def show
     @book = Book.find(params[:id])
+    @user = @book.user
+    @new_book = Book.new
+  end
 
-    #@bookだと↑と混同してしまう
-    @book_new = Book.new
-end
-
-def index
+  def index
     @books = Book.all
-
-    #index.html.erb undifined method errors for nill
-    #を解決する為に記述
-    #/bookでindex.html.erbを表示する際に必要(renderでindexを表示する際はいらない)
-
     @book = Book.new
-
-    #ログインしている人の情報はcurrent_userで取得
-    #current_user.idだとidのみを取得し、エラーになる
     @user = current_user
-end
+  end
 
-def edit
-    @book = Book.find(params[:id])
-end
-
-def destroy
-    book = Book.find(params[:id])
-    book.destroy
-
-    #ActiveRecord::RecordNotFound in BooksController#show Couldn't find Book with 'id'=18
-    #redirect_to book_pathをredirect_to books_pathにした
-
-    redirect_to books_path
-end
-
-def update
-    @book = Book.find(params[:id])
-
-   #もしかしたら、↓の記述によって、存在しないuser_idがcreateのbookに入ったかもしれない
-   #@book.user_id = current_user.id
-
-    #フラッシュメッセージ実装
-    if @book.update(book_params)
-        flash[:notice] = "You have updated user successfully."
-        redirect_to book_path(@book.id)
+  def create
+    @book = Book.new(book_params)
+    @book.user_id = current_user.id
+    if @book.save
+      flash[:notice] = "Book was successfully created."
+      redirect_to book_path(@book)
     else
-        render :edit
+      @books = Book.all
+      @user = current_user
+      render :index
     end
-end
+  end
 
-private
-
-    def book_params
-        params.require(:book).permit(:title, :body)
+  def edit
+    @book = Book.find(params[:id])
+    if @book.user == current_user
+      render :edit
+    else
+      redirect_to books_path
     end
+  end
 
-    # https://qiita.com/nao0725/items/47606b8975603a12fd5eを参考に
-    #↓他人の編集画面に遷移しないようにする記述
-
-    def correct_user
-        @book = Book.find(params[:id])
-        @user = @book.user
-        redirect_to(books_path) unless @user == current_user
+  def update
+    @book = Book.find(params[:id])
+    if @book.update(book_params)
+      flash[:notice] = "Book was successfully updated."
+      redirect_to book_path(@book.id)
+    else
+      render :edit
     end
+  end
+
+  def destroy
+    @book = Book.find(params[:id])
+    if @book.user == current_user
+      @book.destroy
+      flash[:notice] = "Book was successfully destroyed."
+      redirect_to books_path
+    else
+      render :index
+    end
+  end
+
+  private
+
+  def book_params
+    params.require(:book).permit(:title, :body)
+  end
 end
