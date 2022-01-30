@@ -1,5 +1,5 @@
 <h2>User info</h2>
-      <p><%= image_tag user.get_profile_image, size: "90x90" %></p>
+      <%= image_tag user.get_profile_image %>
       <table class="table">
         <tbody>
           <tr></tr>
@@ -20,7 +20,7 @@
         <%= form_with model: book, local:true do |f| %>
           <div class="form-group">
             <label for="book_title">Title</label>
-            <%= f.text_area :title , class:  "form-control book_title"%>
+            <%= f.text_area :title , class: "form-control book_title"%>
           </div>
           <div class="form-group">
             <label for="book_opinion">Opinion</label>
