@@ -5,6 +5,7 @@
     </div>
     <div class="col-md-8 offset-md-1">
       <h2>Book detail</h2>
+      <%= render 'searchs/form' %>
         <div class="book_detail">
           <%= render "books/detail", book: @book, user: @user %>
         </div>
