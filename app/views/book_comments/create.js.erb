@@ -1,0 +1,8 @@
+$(".book_detail").html("<%= j(render 'books/detail', book: @book, user: @book.user ) %>");
+$(".table_comments").html("<%= j(render 'book_comments/comments', book: @book) %>");
+$("textarea").val('')
+<%# コメントの非同期では上記のクラス名の場所が非同期で更新し、renderで返す。
+どちらのクラスもshow.html内の部分テンプレートである。
+3行目はrender後、text_areaを空白にする %>
+<%# show.html内での指定がidの場合は"#detail__table"(ダブルコーテーション)のようになる %>
+<%# また、class指定の場合は'.detail__table'のようにシングルコーテーションになる。 %>
