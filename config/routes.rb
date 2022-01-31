@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 # resorces :userだとuninitialized constant UserControllerというエラーが出た
   resources :books, only: [:create, :show, :index, :edit, :destroy, :update] do
     resource :favorites, only: [:create, :destroy]
+    resources :book_comments, only: [:create, :destroy]
   end
   resources :users
 
