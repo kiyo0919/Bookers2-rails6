@@ -1,0 +1,5 @@
+$(".table_favorites<%= @book.id %>").html("<%= j(render 'favorite', book: @favorite.book) %>");
+<%# 上記のクラス名がついている場所を非同期で更新する %>
+<%# いいね機能の場合はbooks/show.htmlを
+非同期で更新される。 %>
+<%# それぞれに本のidを付与することでどの部分を置き換えるかを判別している %>
