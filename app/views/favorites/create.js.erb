@@ -3,3 +3,5 @@ $(".table_favorites<%= @book.id %>").html("<%= j(render 'favorite', book: @favor
 <%# いいね機能の場合はbooks/show.htmlを
 非同期で更新される。 %>
 <%# それぞれに本のidを付与することでどの部分を置き換えるかを判別している %>
+
+<%# いいねやコメント非同期がリロードしないと動かない問題にて、コードが問題なければ、config/webpack/enviroments.jsの中がカルキュラムと違う記述の恐れあり %>
