@@ -12,18 +12,17 @@ class User < ApplicationRecord
   validates :name, {length: {in: 2..20} }
   validates :name, uniqueness: true
   validates :introduction, length: { maximum: 50 }
-  has_one_attached :image
 
-  def get_profile_image(size)
+  def get_profile_image(width, height)
     # profile_imageに画像がアタッチされてないなら実行
     unless profile_image.attached?
       # `app/assets/images/no_image.jpg`に格納されているファイルを`file_path`変数に格納する
-      file_path = Rails.root.join("app/assets/images/no_image.jpg")
+      file_path = Rails.root.join('app/assets/images/no_image.jpg')
       # profile_imageに`file_path`に格納されているファイルを`default-image.jpg`という名前でjpgファイルとしてデータベースに保存する
-      profile_image.attach(io: File.open(file_path),filename: "default-image.jpg",content_type: "image/jpeg")
+      profile_image.attach(io: File.open(file_path), filename: 'default-image.jpg', content_type: 'image/jpeg')
     end
-    profile_image.variant(resize: size).processed
-  end
+    profile_image.variant(resize_to_fill: [width, height]).processed  #カリキュラムではresize_to_limitで画像サイズが変わるが、自身の環境では変わらず。。
+  end                                                                 # resize_to_fill:にするとサイズが変わった。参考；https://qiita.com/tatsuhiko-nakayama/items/14324668e4b85e9271ee
 
   # hoge.variant()の記述
   # gem "image_processing"を用いて画像のリサイズを行うためには
