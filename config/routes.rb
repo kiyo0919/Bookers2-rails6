@@ -10,5 +10,4 @@ Rails.application.routes.draw do
   end
   resources :users
   get '/search', to: 'searchs#search'
-
 end
