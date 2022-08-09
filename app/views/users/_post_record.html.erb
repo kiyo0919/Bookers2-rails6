@@ -37,7 +37,7 @@
         <td>前週の投稿はなし</td>
       <% else %>
           <td><% the_week_before = this_week_books.count / last_week_books.count.to_f %>
-          <%= (the_day_before * 100).round %>%</td>
+          <%= (the_week_before * 100).round %>%</td>
       <% end %>
     </tr>
   </tbody>
