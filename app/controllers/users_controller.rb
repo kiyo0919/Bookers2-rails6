@@ -4,6 +4,12 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @books = @user.books
     @book = Book.new
+    @book_count = [@books.where(created_at: Time.zone.now.all_day).count]
+    @days = ["今日"]
+    for num in 1..6 do
+      @book_count.push(@books.where(created_at: num.day.ago.all_day).count)
+      @days.push("#{num}日前")
+    end
     @current_user_entries = Entry.where(user_id: current_user.id)
     @user_entries =Entry.where(user_id: @user.id)
     unless @user.id == current_user.id
