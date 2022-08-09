@@ -10,4 +10,7 @@ Rails.application.routes.draw do
   end
   resources :users
   get '/search', to: 'searchs#search'
+
+  resources :messages, only: [:create]
+  resources :rooms, only: [:create,:show]
 end
