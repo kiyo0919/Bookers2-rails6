@@ -2,7 +2,6 @@
 <%= image_tag user.get_profile_image(100,100) %>
 <table class="table">
   <tbody>
-    <tr></tr>
     <tr>
       <td><strong>name</strong></td>
       <td><strong><%= user.name %></strong></td>
@@ -11,6 +10,33 @@
       <td><strong>introduction</strong></td>
       <td><strong><%= user.introduction %></strong></td>
     </tr>
+     <tr>
+        <th>フォロー中</th>
+        <th>
+          <%= link_to followings_user_path(user) do %>
+            <%= user.followings.count %>人
+          <% end %>
+        </th>
+      </tr>
+      <tr>
+        <th>フォロワー</th>
+        <th>
+          <%= link_to followers_user_path(user) do %>
+            <%= user.followers.count %>人
+          <% end %>
+        </th>
+      </tr>
+      <tr>
+        <th>
+          <% unless current_user.id == user.id %>
+            <% if current_user.following?(user) %>
+              <%= link_to "フォロー外す", user_relationships_path(user), method: :delete, class: "btn btn-secondary" %>
+            <% else %>
+              <%= link_to "フォローする", user_relationships_path(user), method: :post, class: "btn btn-primary" %>
+            <% end %>
+          <% end %>
+        </th>
+      </tr>
   </tbody>
 </table>
 <%= link_to  edit_user_path(user), class: "btn btn-outline-secondary btn-block" do  %>

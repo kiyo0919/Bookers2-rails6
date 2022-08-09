@@ -8,6 +8,12 @@ Rails.application.routes.draw do
     resource :favorites, only: [:create, :destroy]
     resources :book_comments, only: [:create, :destroy]
   end
-  resources :users
+  resources :users do
+    member do
+      get 'followers'
+      get 'followings'
+    end
+    resource :relationships, only: [:create, :destroy]
+  end
   get '/search', to: 'searchs#search'
 end
