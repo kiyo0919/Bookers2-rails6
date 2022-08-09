@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <h2><%= @partner.name %>さんとのチャット</h2>
+    <table class="table-striped col-md-10 m-5">
+      <% if @messages.present? %>
+        <% @messages.each do |message| %>
+          <% if message.user == @partner %>
+            <tr>
+              <td class="py-4 px-3 text-left">
+                <%= message.content %> by <%= message.user.name %>
+              </td>
+            </tr>
+          <% else %>
+            <tr>
+              <td class="py-4 px-3 text-right">
+                <%= message.content %> by <%= message.user.name %>
+              </td>
+            </tr>
+          <% end %>
+        <% end %>
+      <% else %>
+        <h5>メッセージはまだありません</h5>
+      <% end %>
+    </table>
+  </div>
+  <div class="row">
+    <div class="col-md-10 m-5">
+      <%= form_with model: @message, url: messages_path, local: true do |f| %>
+        <div class="form-group">
+          <%= f.text_field :content, placeholder: "メッセージを入力して下さい", class:"form-control col-md-4" %>
+        </div>
+        <%= f.hidden_field :room_id, value: @room.id %>
+        <div class="form-group">
+          <%= f.submit "メッセージを送信", class:"btn btn-sm btn-primary" %>
+        </div>
+      <% end %>
+      <%= link_to "ユーザー一覧に戻る", users_path %>
+    </div>
+  </div>
+</div>
