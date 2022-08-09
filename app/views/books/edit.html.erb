@@ -1,7 +1,7 @@
 
 <h1>Editing Book</h1>
  <%= render 'layouts/error', model: @book %>
-<%= form_with model: @book, local:true do |f| %>
+<%= form_with model: @book, url:book_path(@book), local:true do |f| %>
   <p>Title</p>
   <%= f.text_area :title %>
   <p>Opinion</p>

@@ -27,6 +27,9 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav ml-auto">
               <li class="nav-item">
+                <%= render 'searchs/form' %>
+              </li>
+              <li class="nav-item">
                 <%= link_to user_path(current_user.id), class: "nav-link text-light" do %>
                   <i class="fas fa-home"></i>Home
                 <% end %>
