@@ -15,6 +15,12 @@
       <div class="chart">
         <%= render "chart", days: @days, book_count: @book_count %>
       </div>
+      <div class="date_search_form">
+        <%= render "date_search_form", user: @user %>
+      </div>
+      <div id="search_result">
+        <%= render "date_search", user: @user, search_book_count: @search_book_count %>
+      </div>
     </div>
   </div>
 </div>

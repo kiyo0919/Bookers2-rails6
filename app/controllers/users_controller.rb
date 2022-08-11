@@ -30,6 +30,11 @@ class UsersController < ApplicationController
     @yesterday_books = @books.created_yesterday
     @this_week_books = @books.created_this_week
     @last_week_books = @books.created_last_week
+    created_at = params[:created_at]
+    if created_at.present?
+      @search_book_count = @books.where(['created_at LIKE ? ', "#{created_at}%"]).count
+      render "date_search.js.erb"
+    end
   end
 
     def index
@@ -62,6 +67,7 @@ class UsersController < ApplicationController
     def followers
       @user = User.find(params[:id])
     end
+
 
     private
 
