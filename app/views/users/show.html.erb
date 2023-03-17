@@ -2,12 +2,24 @@
 <div class="container px-5 px-sm-0">
   <div class="row">
     <div class="col-md-3">
-      <%= render 'users/userinfo', user: @user, book: @book %>
+      <%= render 'users/userinfo', user: @user, is_room: @is_room, room_id: @room_id, room: @room, entry: @entry, book: @book %>
     </div>
     <div class="col-md-8 offset-md-1">
       <h2>Books</h2>
       <div class="book_index">
         <%= render "books/index", books: @user.books %>
+      </div>
+      <div class="post_records">
+        <%= render "post_record", today_books: @today_books, yesterday_books: @yesterday_books, this_week_books: @this_week_books, last_week_books: @last_week_books%>
+      </div>
+      <div class="chart">
+        <%= render "chart", days: @days, book_count: @book_count %>
+      </div>
+      <div class="date_search_form">
+        <%= render "date_search_form", user: @user %>
+      </div>
+      <div id="search_result">
+        <%= render "date_search", user: @user, search_book_count: @search_book_count %>
       </div>
     </div>
   </div>

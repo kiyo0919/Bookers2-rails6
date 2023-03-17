@@ -4,22 +4,36 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @books = @user.books
     @book = Book.new
-    @currentUserEntry=Entry.where(user_id: current_user.id)
-    @userEntry=Entry.where(user_id: @user.id)
+    @book_count = [@books.where(created_at: Time.zone.now.all_day).count]
+    @days = ["今日"]
+    for num in 1..6 do
+      @book_count.push(@books.where(created_at: num.day.ago.all_day).count)
+      @days.push("#{num}日前")
+    end
+    @current_user_entries = Entry.where(user_id: current_user.id)
+    @user_entries =Entry.where(user_id: @user.id)
     unless @user.id == current_user.id
-      @currentUserEntry.each do |cu|
-        @userEntry.each do |u|
-          if cu.room_id == u.room_id
-            @isRoom = true
-            @roomId = cu.room_id
+      @current_user_entries.each do |current_user_entry|
+        @user_entries.each do |user_entry|
+          if current_user_entry.room_id == user_entry.room_id
+            @is_room = true
+            @room = current_user_entry.room
           end
         end
       end
-      if @isRoom
-      else
+      if not @is_room
         @room = Room.new
         @entry = Entry.new
       end
+    end
+    @today_books =  @books.created_today
+    @yesterday_books = @books.created_yesterday
+    @this_week_books = @books.created_this_week
+    @last_week_books = @books.created_last_week
+    created_at = params[:created_at]
+    if created_at.present?
+      @search_book_count = @books.where(['created_at LIKE ? ', "#{created_at}%"]).count
+      render "date_search.js.erb"
     end
   end
 
@@ -53,6 +67,7 @@ class UsersController < ApplicationController
     def followers
       @user = User.find(params[:id])
     end
+
 
     private
 
